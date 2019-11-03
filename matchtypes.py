@@ -18,6 +18,13 @@ dst = '''
 [частный ремонт квартир в москве]
 '''
 
+# NLTK:
+## lemmatizer
+# https://nlpub.mipt.ru/Pymorphy
+
+import pymorphy2
+morph = pymorphy2.MorphAnalyzer()
+
 # https://www.dabeaz.com/ply/ply.html
 # https://www.matthieuamiguet.ch/media/documents/TeachingCompilersWithPython_Slides.pdf
 
@@ -26,7 +33,7 @@ dst = '''
 import ply.lex  as lex
 
 # lexer token classes
-tokens = ['c','p','eol']#,'n'
+tokens = ['w','p','eol']#,'n'
 
 t_ignore = ' \t'
 
@@ -44,9 +51,10 @@ def t_n(t):
     r'[0-9]+'
     # no return: ignore
 
-# char (^ not ignore + plus)
-def t_c(t):
+# word (^ not ignore + plus)
+def t_w(t):
     r'[^ \t\r\n]+'
+    t.value = morph.parse(t.value)[0].normal_form
     return t
 
 def t_error(t): raise SyntaxError(t)    
@@ -65,11 +73,11 @@ def p_repl_empty(p):
     pass
 
 def p_repl_plused(p):
-    ' repl : repl p c '
+    ' repl : repl p w '
     global accum ; accum += [(p[2],p[3])]
 
 def p_repl_single(p):
-    ' repl : repl c '
+    ' repl : repl w '
     global accum ; accum += [(p[2])]
 
 def p_repl_eol(p):
