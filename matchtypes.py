@@ -18,15 +18,30 @@ dst = '''
 [частный ремонт квартир в москве]
 '''
 
+# https://www.dabeaz.com/ply/ply.html
+# https://www.matthieuamiguet.ch/media/documents/TeachingCompilersWithPython_Slides.pdf
+
 import ply.lex  as lex
 import ply.yacc as yacc
 
-tokens = ['c']
+# lexer token classes
+tokens = ['c','p','n']
 
 t_ignore = ' \t\r\n'
 
+# plus
+def t_p(t):
+    r'\+'
+    return t
+
+# numbers
+def t_n(t):
+    r'[0-9]+'
+    # no return: ignore
+
+# char (^ not ignore + plus)
 def t_c(t):
-    r'.'
+    r'[^ \t\r\n]+'
     return t
 
 def t_error(t): raise SyntaxError(t)    
