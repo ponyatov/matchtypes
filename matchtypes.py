@@ -21,8 +21,9 @@ dst = '''
 # https://www.dabeaz.com/ply/ply.html
 # https://www.matthieuamiguet.ch/media/documents/TeachingCompilersWithPython_Slides.pdf
 
+## lexer part (single tokens)
+
 import ply.lex  as lex
-import ply.yacc as yacc
 
 # lexer token classes
 tokens = ['c','p','eol']#,'n'
@@ -52,6 +53,11 @@ def t_error(t): raise SyntaxError(t)
 
 lexer = lex.lex()
 
+
+## parser part (tokens groups & syntax)
+
+import ply.yacc as yacc
+
 accum = []
 
 def p_repl_empty(p):
@@ -74,6 +80,7 @@ def p_repl_eol(p):
 def p_error(p): raise SyntaxError(p)    
 
 parser = yacc.yacc(debug=False,write_tables=False)
+
 
 if __name__ == '__main__':
     parser.parse(src)
